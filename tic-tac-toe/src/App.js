@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import './App.css';
 
 
- const BoardCell = (props) => { 
+ const BoardCell = ({onClick, value}) => { 
   return (
-     <button onClick={props.onClick}>
-       {props.value}
+     <button onClick={onClick}>
+       {value}
      </button>
    )
  }
@@ -14,8 +14,6 @@ import './App.css';
     const [ squares, setSquares ] = useState(Array(9).fill(null));
     const [ xIsNext, setXIsNext ] = useState(true);
     const [ status, setStatus ] = useState('');
-
-  calculateWinner(squares);
   
   function calculateWinner(squares) {
     const winningLines = [
@@ -41,6 +39,7 @@ import './App.css';
     squares[i] = xIsNext ? 'X' : 'O';
     setSquares([...squares], squares[i]);
     setXIsNext(!xIsNext);
+    calculateWinner(squares);
   }
   
   function renderBoardCell(i) {
@@ -51,9 +50,20 @@ import './App.css';
      );
    }
 
+   const handleReset= () => {
+    setSquares((Array(9).fill(null)));
+    setStatus('')
+   }
+
      return (
+       <>
        <div>
-         <div>{status}</div>
+         <div>
+           { status
+           ? `${status} Wins!`
+           : (squares.indexOf(null) === -1 && !status) ? 'Cats'
+           : ''}
+         </div>
          <div className="top-row">
            {renderBoardCell(0)}
            {renderBoardCell(1)}
@@ -70,6 +80,10 @@ import './App.css';
            {renderBoardCell(8)}
          </div>
        </div>
+       <button onClick={handleReset}>
+         Play Again
+       </button>
+       </>
      )
    }
 
